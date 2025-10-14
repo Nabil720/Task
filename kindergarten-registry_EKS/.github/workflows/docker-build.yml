@@ -1,0 +1,57 @@
+name: Build, Push Docker Images and Update GitOps Repo
+
+on:
+  push:
+    branches: main 
+  pull_request:
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Get commit SHA
+      run: echo "COMMIT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build backend image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/kindergarten-backend:${{ env.COMMIT_SHA }} ./backend
+
+    - name: Push backend image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/kindergarten-backend:${{ env.COMMIT_SHA }}
+
+    - name: Build frontend image
+      run: docker build -t ${{ secrets.DOCKER_USERNAME }}/kindergarten-frontend:${{ env.COMMIT_SHA }} ./frontend
+
+    - name: Push frontend image
+      run: docker push ${{ secrets.DOCKER_USERNAME }}/kindergarten-frontend:${{ env.COMMIT_SHA }}
+
+    - name: Update GitOps repo
+      env:
+        COMMIT_SHA: ${{ env.COMMIT_SHA }}
+      run: |
+        git config --global user.email "nabil@gmail.com"
+        git config --global user.name "Nabil"
+
+        git clone https://x-access-token:${{ secrets.GITOPS_PAT }}@github.com/Nabil720/Task.git
+        cd Task/kindergarten-registry_EKS/k8s
+
+        # Update image tags
+        sed -i "s|image: .*kindergarten-backend:.*|image: ${{ secrets.DOCKER_USERNAME }}/kindergarten-backend:${COMMIT_SHA}|" ./backend-deployment.yaml
+        sed -i "s|image: .*kindergarten-frontend:.*|image: ${{ secrets.DOCKER_USERNAME }}/kindergarten-frontend:${COMMIT_SHA}|" ./frontend-deployment.yaml
+
+        git add .
+        if git diff --cached --quiet; then
+          echo "No changes to commit."
+        else
+          git commit -m "Update backend & frontend image tags to ${COMMIT_SHA}"
+          git push origin main
+        fi
