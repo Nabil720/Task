@@ -42,7 +42,7 @@ jobs:
         git config --global user.name "Nabil"
 
         git clone https://x-access-token:${{ secrets.GITOPS_PAT }}@github.com/Nabil720/Task.git
-        cd Task/kindergarten-registry_EKS/k8s
+        cd Task/kindergarten-registry_EKS_GitOps/k8s
 
         # Update image tags
         sed -i "s|image: .*kindergarten-backend:.*|image: ${{ secrets.DOCKER_USERNAME }}/kindergarten-backend:${COMMIT_SHA}|" ./backend-deployment.yaml
