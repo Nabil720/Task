@@ -1,23 +1,23 @@
 <h1 style="color: #1bf89cff; font-size: 48px; font-weight: bold;">Linux Based Hosting</h1>
 
-
 ## Kindergarten Registry — React + Go + MongoDB (Deployed with Nginx)
 
 This project is a Kindergarten Registry Management System built using React (frontend), Go (backend), and MongoDB (database).  
 It is deployed on an AWS EC2 (Ubuntu t3.micro) instance using Nginx as a reverse proxy.
 
-
-
 ## Step-by-Step Deployment Guide
 
 ### Launch EC2 Instance
-1. Create an EC2 instance using **Ubuntu 22.04 (t3.micro)**.  
-2.  Connect via SSH:
-   ```bash
-   ssh -i key.pem ubuntu@<EC2_PUBLIC_IP>
+
+1. Create an EC2 instance using **Ubuntu 22.04 (t3.micro)**.
+2. Connect via SSH:
+
+```bash
+ssh -i key.pem ubuntu@<EC2_PUBLIC_IP>
 ```
 
-###  Clone the Repository
+### Clone the Repository
+
 ```
 cd ~
 git clone https://github.com/Nabil720/Task.git
@@ -26,6 +26,7 @@ git clone https://github.com/Nabil720/Task.git
 ---
 
 ## Project Structure
+
 ```
 Task/
 ├── kindergarten-registry_linux/
@@ -37,6 +38,7 @@ Task/
 ---
 
 ### Install Required Packages
+
 ```
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y nginx docker.io docker-compose nodejs npm golang-go
@@ -47,7 +49,9 @@ docker -v
 go version
 node -v
 ```
+
 ### Set Up MongoDB
+
 ```
 cd All_Project/kindergarten-registry
 nano docker-compose.yml
@@ -73,6 +77,7 @@ docker-compose up -d
 ```
 
 ### Setup and Run Backend and Frontend
+
 ```
 cd backend
 go mod init backend
@@ -85,6 +90,7 @@ npm run build
 ```
 
 ### Configure Nginx
+
 ```
 # Backup default configuration
 sudo mv /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
@@ -96,8 +102,8 @@ server {
     listen 80;
     server_name 34.236.155.125;
 
-    root /home/ubuntu/All_Project/kindergarten-registry/frontend/build;
-    index index.html;
+    root /usr/share/nginx/html;
+    index index.html index.htm;
 
     location / {
         try_files $uri /index.html;
@@ -122,6 +128,7 @@ sudo systemctl enable nginx
 ```
 
 ### Fix File Permissions
+
 ```
 sudo chmod -R 755 /home/ubuntu/All_Project/kindergarten-registry/frontend/build
 sudo chmod +x /home/ubuntu
@@ -132,12 +139,11 @@ sudo systemctl reload nginx
 ```
 
 ### Access the Application
+
 ```
 http://34.236.155.125
 
 ```
-
-
 
 ## Applicatio architecture
 
@@ -179,9 +185,4 @@ http://34.236.155.125
 
 ```
 
-
-
 ![Website View](./Images/Screenshot%20from%202025-10-12%2017-57-05.png)
-
-
-
