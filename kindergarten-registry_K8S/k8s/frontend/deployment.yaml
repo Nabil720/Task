@@ -14,7 +14,18 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: nanil0034/kindergarten-frontend:latest
+        image: nanil0034/kindergarten-frontend:bb843b6
         ports:
         - containerPort: 3000
-
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /readiness
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
