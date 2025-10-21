@@ -144,3 +144,7 @@ kubectl get all
 
 
 ![Website View](./Images/Screenshot%20from%202025-10-14%2011-34-55.png)
+
+# After Added Probe
+![Website View](./Images/Screenshot%20from%202025-10-21%2016-14-38.png)
+![Cluster View](./Images/Screenshot%20from%202025-10-21%2016-15-31.png)
