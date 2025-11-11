@@ -79,7 +79,7 @@ kubectl -n argocd patch svc argocd-server -p '{"spec": {"type": "LoadBalancer"}}
 kubectl get svc -n argocd
 
 # Argo CD initial password
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode; echo
+kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d && echo
 ```
 ## Nginx ingress controller install
 ```
